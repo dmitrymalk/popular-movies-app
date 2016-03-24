@@ -22,23 +22,58 @@ import java.util.List;
  */
 public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
-    private final Listener listener;
-
-    interface Listener {
-        void onFetchFinished(List<Movie> movies);
-    }
-
     @SuppressWarnings("unused")
     public static String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
-    public FetchMoviesTask(Listener listener) {
-        this.listener = listener;
+    /**
+     * Will be called in {@link FetchMoviesTask#onPostExecute(List)} to notify subscriber to about
+     * task completion.
+     */
+    private final NotifyAboutTaskCompletionCommand mCommand;
+
+    /**
+     * Interface definition for a callback to be invoked when movies are loaded.
+     */
+    interface Listener {
+        void onFetchFinished(Command command);
+    }
+
+    /**
+     * Possible good idea to use {@link android.content.AsyncTaskLoader}, which by default is tied
+     * to lifecycle method, but this approach has its own limitations
+     * (i. e. publish progress is not possible in this case).
+     * <p/>
+     * Idea is to use AsyncTasks in combination with non-UI retained fragment and Command pattern.
+     * It helps save calls which we cannot execute immediately for later.
+     */
+    public static class NotifyAboutTaskCompletionCommand implements Command {
+        private FetchMoviesTask.Listener mListener;
+        // The result of the task execution.
+        private List<Movie> mMovies;
+
+        public NotifyAboutTaskCompletionCommand(FetchMoviesTask.Listener listener) {
+            mListener = listener;
+        }
+
+        @Override
+        public void execute() {
+            mListener.onFetchFinished(this);
+        }
+
+        public List<Movie> getMovies() {
+            return mMovies;
+        }
+    }
+
+    public FetchMoviesTask(NotifyAboutTaskCompletionCommand command) {
+        this.mCommand = command;
     }
 
     @Override
     protected void onPostExecute(List<Movie> movies) {
-        // TODO : Handle cases when we cannot fetch.
-        this.listener.onFetchFinished(movies);
+        // TODO : Handle cases when we cannot fetch it (i.e due missing internet connection).
+        mCommand.mMovies = movies;
+        mCommand.execute();
     }
 
     @Override
@@ -72,21 +107,16 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             InputStream inputStream = urlConnection.getInputStream();
             StringBuilder builder = new StringBuilder();
             if (inputStream == null) {
-                // Nothing to do.
                 return null;
             }
             reader = new BufferedReader(new InputStreamReader(inputStream));
 
             String line;
             while ((line = reader.readLine()) != null) {
-                // Since it's JSON, adding a newline isn't necessary (it won't affect parsing)
-                // But it does make debugging a *lot* easier if you print out the completed
-                // buffer for debugging.
                 builder.append(line).append("\n");
             }
 
             if (builder.length() == 0) {
-                // Stream was empty.  No point in parsing.
                 return null;
             }
             moviesJsonStr = builder.toString();
@@ -99,8 +129,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "Error ", e);
-            // If the code didn't successfully get the weather data, there's no point in attemping
-            // to parse it.
             return null;
         } finally {
             if (urlConnection != null) {

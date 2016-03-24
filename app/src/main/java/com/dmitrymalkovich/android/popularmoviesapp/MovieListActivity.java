@@ -1,20 +1,15 @@
 package com.dmitrymalkovich.android.popularmoviesapp;
 
-import android.Manifest;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * An activity representing a grid of Movies. This activity
@@ -23,7 +18,6 @@ import java.util.List;
 public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
         MovieListAdapter.Callbacks {
 
-    private static final int PERMISSIONS_REQUEST_INTERNET = 1;
     private static final String EXTRA_MOVIES = "EXTRA_MOVIES";
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
@@ -46,6 +40,11 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         mRecyclerView.setHasFixedSize(true);
+        // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"
+        // during data loading.
+        mAdapter = new MovieListAdapter(new ArrayList<Movie>(),
+                this);
+        mRecyclerView.setAdapter(mAdapter);
 
         String tag = RetainedFragment.class.getName();
         this.retainedFragment = (RetainedFragment) getSupportFragmentManager().findFragmentByTag(tag);
@@ -55,14 +54,18 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         }
 
         if (findViewById(R.id.movie_detail_container) != null) {
-            // large-screen layouts (res/values-w900dp).
+            // For large-screen layouts (res/values-w900dp).
             mTwoPane = true;
         }
 
+        // Fetch Movies only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MOVIES)) {
             Serializable s = savedInstanceState.getSerializable(EXTRA_MOVIES);
             if (s instanceof Movies) {
-                onFetchFinished(((Movies) s).getMovies());
+                Movies movies = (Movies) s;
+                mAdapter.add(movies.getMovies());
+            } else {
+                throw new IllegalStateException("SavedInstanceState is not empty and without needed data.");
             }
         } else {
             fetchMovies();
@@ -79,23 +82,12 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_INTERNET: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    fetchMovies();
-                }
-                // TODO : Handle permission denied.
-            }
+    public void onFetchFinished(Command command) {
+        if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
+            mAdapter = new MovieListAdapter(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies(),
+                    this);
+            mRecyclerView.setAdapter(mAdapter);
         }
-    }
-
-    @Override
-    public void onFetchFinished(List<Movie> movies) {
-        mAdapter = new MovieListAdapter(movies, this);
-        mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
@@ -116,17 +108,27 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     private void fetchMovies() {
-        // TODO : Should we show an explanation?
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.INTERNET) == PackageManager.PERMISSION_GRANTED) {
-            new FetchMoviesTask(this.retainedFragment).execute();
-        } else {
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.INTERNET},
-                    PERMISSIONS_REQUEST_INTERNET);
-        }
+        FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
+                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
+        new FetchMoviesTask(command).execute();
     }
 
+    /**
+     * RetainedFragment with saving state mechanism.
+     * The saving state mechanism helps to not lose user's progress even when app is in the
+     * background state or user rotate device and also to avoid performing code which
+     * will lead to "java.lang.IllegalStateException: Can not perform some actions after
+     * onSaveInstanceState". As the result we have commands which we cannot execute now,
+     * but we have to store it and execute later.
+     *
+     * @see com.dmitrymalkovich.android.popularmoviesapp.FetchMoviesTask.NotifyAboutTaskCompletionCommand
+     */
     public static class RetainedFragment extends Fragment implements FetchMoviesTask.Listener {
+
+        private boolean mPaused = false;
+        // Currently allow to wait one command, because more is not needed. In future it can be
+        // extended to list etc. Using "MacroCommand" which contain includes other commands as waiting command.
+        private Command mWaitingCommand = null;
 
         public RetainedFragment() {
         }
@@ -138,12 +140,30 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         }
 
         @Override
-        public void onFetchFinished(List<Movie> movies) {
-            if (getActivity() instanceof FetchMoviesTask.Listener) {
-                FetchMoviesTask.Listener listener = (FetchMoviesTask.Listener) getActivity();
-                listener.onFetchFinished(movies);
+        public void onPause() {
+            super.onPause();
+            mPaused = true;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            mPaused = false;
+            if (mWaitingCommand != null) {
+                onFetchFinished(mWaitingCommand);
             }
-            // TODO : Add commands pattern to collect results and publish them.
+        }
+
+        @Override
+        public void onFetchFinished(Command command) {
+            if (getActivity() instanceof FetchMoviesTask.Listener && !mPaused) {
+                FetchMoviesTask.Listener listener = (FetchMoviesTask.Listener) getActivity();
+                listener.onFetchFinished(command);
+                mWaitingCommand = null;
+            } else {
+                // save command for later.
+                mWaitingCommand = command;
+            }
         }
     }
 }

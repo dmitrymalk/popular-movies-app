@@ -60,6 +60,11 @@ public class MovieListAdapter
         }
     }
 
+    public void add(List<Movie> movies) {
+        mMovies.addAll(movies);
+        notifyDataSetChanged();
+    }
+
     public List<Movie> getMovies() {
         return mMovies;
     }
