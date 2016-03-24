@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -72,7 +73,11 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
     @Override
     protected void onPostExecute(List<Movie> movies) {
         // TODO : Handle cases when we cannot fetch it (i.e due missing internet connection).
-        mCommand.mMovies = movies;
+        if (movies != null) {
+            mCommand.mMovies = movies;
+        } else {
+            mCommand.mMovies = new ArrayList<>();
+        }
         mCommand.execute();
     }
 

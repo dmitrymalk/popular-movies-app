@@ -38,7 +38,8 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         toolbar.setTitle(getTitle());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
+                .getInteger(R.integer.grid_number_cols)));
         mRecyclerView.setHasFixedSize(true);
         // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"
         // during data loading.
@@ -84,8 +85,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     public void onFetchFinished(Command command) {
         if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
-            mAdapter = new MovieListAdapter(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies(),
-                    this);
+            mAdapter.add(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies());
             mRecyclerView.setAdapter(mAdapter);
         }
     }

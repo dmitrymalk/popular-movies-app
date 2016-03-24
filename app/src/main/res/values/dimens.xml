@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="item_width">400dp</dimen>
+    <integer name="grid_number_cols">2</integer>
+    <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w185</string>
 </resources>
