@@ -3,7 +3,9 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
-    <dimen name="item_width">400dp</dimen>
+    <dimen name="movie_poster_padding_right">16dp</dimen>
+    <dimen name="movie_overview_padding_top">16dp</dimen>
     <integer name="grid_number_cols">2</integer>
     <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w185</string>
+    <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
 </resources>

@@ -92,7 +92,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
         try {
             final String MOVIE_BASE_URL =
-                    "http://api.themoviedb.org/3/discover/movie?";
+                    "http://api.themoviedb.org/3/movie/popular?";
             final String API_KEY = "api_key";
 
             Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()
@@ -155,8 +155,12 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
         final String MDB_RESULTS = "results";
         final String MDB_ID = "id";
-        final String MDB_TITLE = "title";
+        final String MDB_TITLE = "original_title";
         final String MDB_POSTER_PATH = "poster_path";
+        final String MDB_OVERVIEW = "overview";
+        final String MDB_VOTE_AVERAGE = "vote_average";
+        final String MDB_RELEASE_DATE = "release_date";
+        final String MDB_BACKDROP_PATH = "backdrop_path";
 
         JSONObject moviesJson = new JSONObject(moviesJsonStr);
         JSONArray moviesArray = moviesJson.getJSONArray(MDB_RESULTS);
@@ -168,8 +172,12 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
             long id = movieJson.getLong(MDB_ID);
             String title = movieJson.getString(MDB_TITLE);
             String poster = movieJson.getString(MDB_POSTER_PATH);
+            String overview = movieJson.getString(MDB_OVERVIEW);
+            String userRating = movieJson.getString(MDB_VOTE_AVERAGE);
+            String releaseDate = movieJson.getString(MDB_RELEASE_DATE);
+            String backdrop = movieJson.getString(MDB_BACKDROP_PATH);
 
-            movies[i] = new Movie(id, title, poster);
+            movies[i] = new Movie(id, title, poster, overview, userRating, releaseDate, backdrop);
         }
         return Arrays.asList(movies);
     }

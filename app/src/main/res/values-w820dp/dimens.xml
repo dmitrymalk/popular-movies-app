@@ -5,4 +5,5 @@
     <dimen name="activity_horizontal_margin">64dp</dimen>
     <integer name="grid_number_cols">3</integer>
     <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
+    <dimen name="app_bar_height">400dp</dimen>
 </resources>

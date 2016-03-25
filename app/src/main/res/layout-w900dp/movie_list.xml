@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:layout_weight="2"
     android:baselineAligned="false"
     android:divider="?android:attr/dividerHorizontal"
     android:orientation="horizontal"
@@ -12,15 +13,15 @@
     <!--
     This layout is a two-pane layout for the Movies
     master/detail flow.
-    
     -->
 
     <android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/movie_list"
         android:name="com.dmitrymalkovich.android.popularmoviesapp.MovieListFragment"
-        android:layout_width="@dimen/item_width"
+        android:layout_width="0dp"
         android:layout_height="match_parent"
+        android:layout_weight="1"
         app:layoutManager="LinearLayoutManager"
         tools:context="com.dmitrymalkovich.android.popularmoviesapp.MovieListActivity"
         tools:listitem="@layout/movie_list_content" />
@@ -29,6 +30,6 @@
         android:id="@+id/movie_detail_container"
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="3" />
+        android:layout_weight="1" />
 
 </LinearLayout>
