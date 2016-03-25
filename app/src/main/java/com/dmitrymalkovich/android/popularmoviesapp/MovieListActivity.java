@@ -7,6 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -83,6 +86,31 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.movie_list_activity, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sort_by_top_rated:
+                fetchMovies(FetchMoviesTask.TOP_RATED);
+                item.setChecked(true);
+                break;
+            case R.id.sort_by_most_popular:
+                fetchMovies(FetchMoviesTask.MOST_POPULAR);
+                item.setChecked(true);
+                break;
+            default:
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
     public void onFetchFinished(Command command) {
         if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
             mAdapter.add(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies());
@@ -111,6 +139,12 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
                 new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
         new FetchMoviesTask(command).execute();
+    }
+
+    private void fetchMovies(@FetchMoviesTask.SORT_BY String sortBy) {
+        FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
+                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
+        new FetchMoviesTask(sortBy, command).execute();
     }
 
     /**

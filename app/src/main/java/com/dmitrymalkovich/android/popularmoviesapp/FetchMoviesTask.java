@@ -2,6 +2,7 @@ package com.dmitrymalkovich.android.popularmoviesapp;
 
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.annotation.StringDef;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -26,11 +27,21 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
     @SuppressWarnings("unused")
     public static String LOG_TAG = FetchMoviesTask.class.getSimpleName();
 
+    public final static String MOST_POPULAR = "popular";
+    public final static String TOP_RATED = "top_rated";
+
+    @StringDef({MOST_POPULAR, TOP_RATED})
+    public @interface SORT_BY {
+    }
+
     /**
      * Will be called in {@link FetchMoviesTask#onPostExecute(List)} to notify subscriber to about
      * task completion.
      */
     private final NotifyAboutTaskCompletionCommand mCommand;
+    private
+    @SORT_BY
+    String mSortBy = MOST_POPULAR;
 
     /**
      * Interface definition for a callback to be invoked when movies are loaded.
@@ -67,7 +78,12 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
     }
 
     public FetchMoviesTask(NotifyAboutTaskCompletionCommand command) {
-        this.mCommand = command;
+        mCommand = command;
+    }
+
+    public FetchMoviesTask(@SORT_BY String sortBy, NotifyAboutTaskCompletionCommand command) {
+        mCommand = command;
+        mSortBy = sortBy;
     }
 
     @Override
@@ -92,7 +108,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
         try {
             final String MOVIE_BASE_URL =
-                    "http://api.themoviedb.org/3/movie/popular?";
+                    "http://api.themoviedb.org/3/movie/" + mSortBy + "?";
             final String API_KEY = "api_key";
 
             Uri builtUri = Uri.parse(MOVIE_BASE_URL).buildUpon()

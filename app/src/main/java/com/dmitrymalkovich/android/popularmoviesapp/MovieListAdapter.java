@@ -109,6 +109,7 @@ public class MovieListAdapter
     }
 
     public void add(List<Movie> movies) {
+        mMovies.clear();
         mMovies.addAll(movies);
         notifyDataSetChanged();
     }

@@ -3,4 +3,6 @@
     <string name="title_movie_list">Popular Movies</string>
     <string name="title_movie_detail">Movie Detail</string>
     <string name="user_rating_movie">TMDB: %1$s/10</string>
+    <string name="most_popular">Most popular</string>
+    <string name="top_rated">Top rated</string>
 </resources>
