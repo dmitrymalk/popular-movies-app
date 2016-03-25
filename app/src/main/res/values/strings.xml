@@ -5,4 +5,6 @@
     <string name="user_rating_movie">TMDB: %1$s/10</string>
     <string name="most_popular">Most popular</string>
     <string name="top_rated">Top rated</string>
+    <string name="title_for_empty_view">No movies</string>
+    <string name="text_for_empty_view">Possible internet connection is missing</string>
 </resources>

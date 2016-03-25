@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -37,13 +38,12 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         setContentView(R.layout.activity_movie_list);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle(R.string.title_movie_list);
         setSupportActionBar(toolbar);
-        toolbar.setTitle(getTitle());
 
         mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
                 .getInteger(R.integer.grid_number_cols)));
-        mRecyclerView.setHasFixedSize(true);
         // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"
         // during data loading.
         mAdapter = new MovieListAdapter(new ArrayList<Movie>(),
@@ -68,6 +68,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
             if (s instanceof Movies) {
                 Movies movies = (Movies) s;
                 mAdapter.add(movies.getMovies());
+                findViewById(R.id.progress).setVisibility(View.GONE);
             } else {
                 throw new IllegalStateException("SavedInstanceState is not empty and without needed data.");
             }
@@ -114,7 +115,12 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public void onFetchFinished(Command command) {
         if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
             mAdapter.add(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies());
-            mRecyclerView.setAdapter(mAdapter);
+            if (mAdapter.getItemCount() == 0) {
+                findViewById(R.id.empty_state_container).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.empty_state_container).setVisibility(View.GONE);
+            }
+            findViewById(R.id.progress).setVisibility(View.GONE);
         }
     }
 

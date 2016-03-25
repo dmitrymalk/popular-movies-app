@@ -38,6 +38,15 @@ public class MovieListAdapter
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.movie_list_content, parent, false);
+        final Context context = view.getContext();
+
+        float posterAspectRatio = 1.5f;
+        int gridColsNumber = context.getResources()
+                .getInteger(R.integer.grid_number_cols);
+
+        view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber *
+                posterAspectRatio);
+
         return new ViewHolder(view);
     }
 

@@ -1,5 +1,4 @@
 <resources>
     <integer name="grid_number_cols">3</integer>
-    <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w500</string>
     <dimen name="app_bar_height">300dp</dimen>
 </resources>
