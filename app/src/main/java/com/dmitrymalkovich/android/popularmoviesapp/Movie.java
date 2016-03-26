@@ -13,6 +13,7 @@ import java.util.Locale;
 public class Movie implements Serializable {
 
     public static final String LOG_TAG = Movie.class.getSimpleName();
+    public static final float POSTER_ASPECT_RATIO = 1.5f;
     private long mId;
     private String mTitle;
     private String mPoster;

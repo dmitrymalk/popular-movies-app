@@ -40,12 +40,11 @@ public class MovieListAdapter
                 .inflate(R.layout.movie_list_content, parent, false);
         final Context context = view.getContext();
 
-        float posterAspectRatio = 1.5f;
         int gridColsNumber = context.getResources()
                 .getInteger(R.integer.grid_number_cols);
 
         view.getLayoutParams().height = (int) (parent.getWidth() / gridColsNumber *
-                posterAspectRatio);
+                Movie.POSTER_ASPECT_RATIO);
 
         return new ViewHolder(view);
     }

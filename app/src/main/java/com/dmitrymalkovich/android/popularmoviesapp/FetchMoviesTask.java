@@ -88,7 +88,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
     @Override
     protected void onPostExecute(List<Movie> movies) {
-        // TODO : Handle cases when we cannot fetch it (i.e due missing internet connection).
         if (movies != null) {
             mCommand.mMovies = movies;
         } else {
