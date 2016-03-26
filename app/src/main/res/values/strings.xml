@@ -7,4 +7,5 @@
     <string name="top_rated">Top rated</string>
     <string name="title_for_empty_view">No movies</string>
     <string name="text_for_empty_view">Possible internet connection is missing</string>
+    <string name="rating">Rating:</string>
 </resources>

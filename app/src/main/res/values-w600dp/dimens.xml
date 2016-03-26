@@ -1,4 +1,3 @@
 <resources>
     <integer name="grid_number_cols">3</integer>
-    <dimen name="app_bar_height">300dp</dimen>
 </resources>

@@ -20,10 +20,10 @@
 
             <ImageView
                 android:id="@+id/movie_poster"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingRight="@dimen/movie_poster_padding_right"
-                android:scaleType="centerInside" />
+                android:layout_width="180dp"
+                android:layout_height="270dp"
+                android:layout_marginRight="@dimen/movie_poster_padding_right"
+                android:scaleType="fitXY" />
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -38,6 +38,22 @@
                     android:textIsSelectable="true"
                     android:textStyle="bold" />
 
+                <TextView
+                    android:id="@+id/movie_release_date"
+                    style="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/text_color_for_movie_overview"
+                    android:textIsSelectable="true" />
+
+                <TextView
+                    style="?android:attr/textAppearanceMedium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/movie_rating_vertical_padding"
+                    android:text="@string/rating"
+                    android:textColor="@color/text_color_for_movie_overview" />
+
                 <include layout="@layout/rating" />
 
                 <TextView
@@ -45,16 +61,8 @@
                     style="?android:attr/textAppearanceMedium"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textIsSelectable="true"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/movie_release_date"
-                    style="?android:attr/textAppearanceMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textIsSelectable="true"
-                    android:textStyle="bold" />
+                    android:textColor="@color/text_color_for_movie_overview"
+                    android:textIsSelectable="true" />
 
             </LinearLayout>
         </LinearLayout>
@@ -65,6 +73,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingTop="@dimen/movie_overview_padding_top"
+            android:textColor="@color/text_color_for_movie_overview"
             android:textIsSelectable="true" />
 
     </LinearLayout>

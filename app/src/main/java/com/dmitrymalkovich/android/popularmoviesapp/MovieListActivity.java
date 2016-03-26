@@ -142,12 +142,14 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     }
 
     private void fetchMovies() {
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
         FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
                 new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
         new FetchMoviesTask(command).execute();
     }
 
     private void fetchMovies(@FetchMoviesTask.SORT_BY String sortBy) {
+        findViewById(R.id.progress).setVisibility(View.VISIBLE);
         FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
                 new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
         new FetchMoviesTask(sortBy, command).execute();
