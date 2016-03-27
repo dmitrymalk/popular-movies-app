@@ -22,6 +22,15 @@ android {
         }
     }
 
+    // For Butter Knife support (http://jakewharton.github.io/butterknife/)
+    lintOptions {
+        disable 'InvalidPackage'
+    }
+
+    packagingOptions {
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+    }
+
     buildTypes.each {
         it.buildConfigField 'String', 'THE_MOVIE_DATABASE_API_KEY', TheMovieDatabasepApiKey
     }
@@ -35,4 +44,5 @@ dependencies {
     compile 'com.android.support:support-v4:23.2.0'
     compile 'com.android.support:recyclerview-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
 }

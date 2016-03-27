@@ -2,6 +2,7 @@ package com.dmitrymalkovich.android.popularmoviesapp;
 
 import android.app.Activity;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
@@ -13,6 +14,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
+
+import butterknife.Bind;
+import butterknife.BindDrawable;
+import butterknife.ButterKnife;
 
 /**
  * A fragment representing a single Movie detail screen.
@@ -27,10 +34,26 @@ public class MovieDetailFragment extends Fragment {
      */
     public static final String ARG_MOVIE = "ARG_MOVIE";
 
-    /**
-     * The dummy content this fragment is presenting.
-     */
     private Movie mMovie;
+    @Bind(R.id.movie_title)
+    TextView mMovieTitleView;
+    @Bind(R.id.movie_overview)
+    TextView mMovieOverviewView;
+    @Bind(R.id.movie_release_date)
+    TextView mMovieReleaseDateView;
+    @Bind(R.id.movie_user_rating)
+    TextView mMovieRatingView;
+    @Bind(R.id.movie_poster)
+    ImageView mMoviePosterView;
+
+    @Bind({R.id.rating_first_star, R.id.rating_second_star, R.id.rating_third_star,
+            R.id.rating_fourth_star, R.id.rating_fifth_star})
+    List<ImageView> ratingStarViews;
+
+    @BindDrawable(R.drawable.ic_star_black_24dp)
+    Drawable starDrawable;
+    @BindDrawable(R.drawable.ic_star_half_black_24dp)
+    Drawable starHalfDrawable;
 
     public MovieDetailFragment() {
     }
@@ -68,65 +91,56 @@ public class MovieDetailFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.movie_detail, container, false);
-        ((TextView) rootView.findViewById(R.id.movie_title)).setText(mMovie.getTitle());
-        ((TextView) rootView.findViewById(R.id.movie_overview)).setText(mMovie.getOverview());
-        ((TextView) rootView.findViewById(R.id.movie_release_date)).setText(mMovie.getReleaseDate());
+        ButterKnife.bind(this, rootView);
+
+        mMovieTitleView.setText(mMovie.getTitle());
+        mMovieOverviewView.setText(mMovie.getOverview());
+        mMovieReleaseDateView.setText(mMovie.getReleaseDate());
 
         String userRatingStr = getResources().getString(R.string.user_rating_movie,
                 mMovie.getUserRating());
-        ((TextView) rootView.findViewById(R.id.movie_user_rating)).setText(userRatingStr);
+        mMovieRatingView.setText(userRatingStr);
 
-        ImageView moviePoster = ((ImageView) rootView.findViewById(R.id.movie_poster));
         Picasso.with(getContext())
                 .load(mMovie.getPosterUrl(getContext()))
                 .config(Bitmap.Config.RGB_565)
-                .into(moviePoster);
+                .into(mMoviePosterView);
 
         float userRating = Float.valueOf(mMovie.getUserRating()) / 2;
 
         if (userRating > 0.5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_first_star))
-                    .setImageResource(R.drawable.ic_star_half_black_24dp);
+            ratingStarViews.get(0).setImageDrawable(starHalfDrawable);
         }
         if (userRating >= 1.f) {
-            ((ImageView) rootView.findViewById(R.id.rating_first_star))
-                    .setImageResource(R.drawable.ic_star_black_24dp);
+            ratingStarViews.get(0).setImageDrawable(starDrawable);
         }
 
         if (userRating >= 1.5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_second_star))
-                    .setImageResource(R.drawable.ic_star_half_black_24dp);
+            ratingStarViews.get(1).setImageDrawable(starHalfDrawable);
         }
         if (userRating >= 2f) {
-            ((ImageView) rootView.findViewById(R.id.rating_second_star))
-                    .setImageResource(R.drawable.ic_star_black_24dp);
+            ratingStarViews.get(1).setImageDrawable(starDrawable);
         }
 
         if (userRating >= 2.5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_third_star))
-                    .setImageResource(R.drawable.ic_star_half_black_24dp);
+            ratingStarViews.get(2).setImageDrawable(starHalfDrawable);
         }
         if (userRating >= 3f) {
-            ((ImageView) rootView.findViewById(R.id.rating_third_star))
-                    .setImageResource(R.drawable.ic_star_black_24dp);
+            ratingStarViews.get(2).setImageDrawable(starDrawable);
         }
 
         if (userRating >= 3.5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_fourth_star))
-                    .setImageResource(R.drawable.ic_star_half_black_24dp);
+            ratingStarViews.get(3).setImageDrawable(starHalfDrawable);
         }
         if (userRating >= 4f) {
-            ((ImageView) rootView.findViewById(R.id.rating_fourth_star))
-                    .setImageResource(R.drawable.ic_star_black_24dp);
+            ratingStarViews.get(3).setImageDrawable(starDrawable);
         }
 
         if (userRating >= 4.5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_fifth_star))
-                    .setImageResource(R.drawable.ic_star_half_black_24dp);
+            ratingStarViews.get(4).setImageDrawable(starHalfDrawable);
         }
         if (userRating >= 5f) {
-            ((ImageView) rootView.findViewById(R.id.rating_fifth_star))
-                    .setImageResource(R.drawable.ic_star_black_24dp);
+            ratingStarViews.get(4).setImageDrawable(starDrawable);
         }
 
         return rootView;

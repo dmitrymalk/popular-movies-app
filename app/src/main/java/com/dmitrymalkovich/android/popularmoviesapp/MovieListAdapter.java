@@ -3,18 +3,18 @@ package com.dmitrymalkovich.android.popularmoviesapp;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
 public class MovieListAdapter
         extends RecyclerView.Adapter<MovieListAdapter.ViewHolder> {
@@ -98,11 +98,13 @@ public class MovieListAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
-        public final ImageView mThumbnailView;
+        @Bind(R.id.thumbnail)
+        ImageView mThumbnailView;
         public Movie mMovie;
 
         public ViewHolder(View view) {
             super(view);
+            ButterKnife.bind(this, view);
             mView = view;
             mThumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
         }

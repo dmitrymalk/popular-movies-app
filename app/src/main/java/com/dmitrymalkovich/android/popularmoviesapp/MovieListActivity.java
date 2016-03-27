@@ -15,6 +15,9 @@ import android.view.View;
 import java.io.Serializable;
 import java.util.ArrayList;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * An activity representing a grid of Movies. This activity
  * has different presentations for handset and tablet-size devices.
@@ -28,7 +31,10 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
      * device.
      */
     private boolean mTwoPane;
-    private RecyclerView mRecyclerView;
+    @Bind(R.id.movie_list)
+    RecyclerView mRecyclerView;
+    @Bind(R.id.toolbar)
+    Toolbar mToolbar;
     private RetainedFragment retainedFragment;
     private MovieListAdapter mAdapter;
 
@@ -36,12 +42,11 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_list);
+        ButterKnife.bind(this);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle(R.string.title_movie_list);
-        setSupportActionBar(toolbar);
+        mToolbar.setTitle(R.string.title_movie_list);
+        setSupportActionBar(mToolbar);
 
-        mRecyclerView = (RecyclerView) findViewById(R.id.movie_list);
         mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
                 .getInteger(R.integer.grid_number_cols)));
         // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"

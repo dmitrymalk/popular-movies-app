@@ -8,6 +8,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.ActionBar;
 import android.view.MenuItem;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
+
 /**
  * An activity representing a single Movie detail screen. This
  * activity is only used narrow width devices. On tablet-size devices,
@@ -16,12 +19,16 @@ import android.view.MenuItem;
  */
 public class MovieDetailActivity extends AppCompatActivity {
 
+    @Bind(R.id.detail_toolbar)
+    Toolbar mToolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.detail_toolbar);
-        setSupportActionBar(toolbar);
+        ButterKnife.bind(this);
+
+        setSupportActionBar(mToolbar);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(Color.TRANSPARENT);
