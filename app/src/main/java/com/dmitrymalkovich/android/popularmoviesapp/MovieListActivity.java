@@ -35,7 +35,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     RecyclerView mRecyclerView;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    private RetainedFragment retainedFragment;
+    private RetainedFragment mRetainedFragment;
     private MovieListAdapter mAdapter;
 
     @Override
@@ -56,10 +56,10 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mRecyclerView.setAdapter(mAdapter);
 
         String tag = RetainedFragment.class.getName();
-        this.retainedFragment = (RetainedFragment) getSupportFragmentManager().findFragmentByTag(tag);
-        if (this.retainedFragment == null) {
-            this.retainedFragment = new RetainedFragment();
-            getSupportFragmentManager().beginTransaction().add(this.retainedFragment, tag).commit();
+        this.mRetainedFragment = (RetainedFragment) getSupportFragmentManager().findFragmentByTag(tag);
+        if (this.mRetainedFragment == null) {
+            this.mRetainedFragment = new RetainedFragment();
+            getSupportFragmentManager().beginTransaction().add(this.mRetainedFragment, tag).commit();
         }
 
         if (findViewById(R.id.movie_detail_container) != null) {
@@ -149,14 +149,14 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     private void fetchMovies() {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
         FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
-                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
+                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.mRetainedFragment);
         new FetchMoviesTask(command).execute();
     }
 
     private void fetchMovies(@FetchMoviesTask.SORT_BY String sortBy) {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
         FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
-                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.retainedFragment);
+                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.mRetainedFragment);
         new FetchMoviesTask(sortBy, command).execute();
     }
 

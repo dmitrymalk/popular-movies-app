@@ -95,18 +95,24 @@ public class MovieDetailFragment extends Fragment {
 
         mMovieTitleView.setText(mMovie.getTitle());
         mMovieOverviewView.setText(mMovie.getOverview());
-        mMovieReleaseDateView.setText(mMovie.getReleaseDate());
-
-        String userRatingStr = getResources().getString(R.string.user_rating_movie,
-                mMovie.getUserRating());
-        mMovieRatingView.setText(userRatingStr);
+        mMovieReleaseDateView.setText(mMovie.getReleaseDate(getContext()));
 
         Picasso.with(getContext())
                 .load(mMovie.getPosterUrl(getContext()))
                 .config(Bitmap.Config.RGB_565)
                 .into(mMoviePosterView);
 
-        float userRating = Float.valueOf(mMovie.getUserRating()) / 2;
+        float userRating = 0.f;
+        if (mMovie.getUserRating() != null && !mMovie.getUserRating().isEmpty()) {
+
+            String userRatingStr = getResources().getString(R.string.user_rating_movie,
+                    mMovie.getUserRating());
+            mMovieRatingView.setText(userRatingStr);
+
+            userRating = Float.valueOf(mMovie.getUserRating()) / 2;
+        } else {
+            mMovieRatingView.setVisibility(View.GONE);
+        }
 
         if (userRating > 0.5f) {
             ratingStarViews.get(0).setImageDrawable(starHalfDrawable);

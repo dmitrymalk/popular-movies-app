@@ -8,4 +8,5 @@
     <string name="title_for_empty_view">No movies</string>
     <string name="text_for_empty_view">Possible internet connection is missing</string>
     <string name="rating">Rating:</string>
+    <string name="release_date_missing">Release date is unknown</string>
 </resources>

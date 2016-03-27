@@ -20,8 +20,8 @@
 
             <ImageView
                 android:id="@+id/movie_poster"
-                android:layout_width="180dp"
-                android:layout_height="270dp"
+                android:layout_width="@dimen/movie_poster_width_for_detail"
+                android:layout_height="@dimen/movie_poster_height_for_detail"
                 android:layout_marginRight="@dimen/movie_poster_padding_right"
                 android:scaleType="fitXY" />
 

@@ -1,6 +1,7 @@
 package com.dmitrymalkovich.android.popularmoviesapp;
 
 import android.content.Context;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import java.io.Serializable;
@@ -33,6 +34,7 @@ public class Movie implements Serializable {
         this.mBackdrop = backdrop;
     }
 
+    @Nullable
     public String getTitle() {
         return mTitle;
     }
@@ -41,34 +43,51 @@ public class Movie implements Serializable {
         return mId;
     }
 
+    @Nullable
     public String getPosterUrl(Context context) {
-        return context.getResources().getString(R.string.url_for_downloading_poster) + mPoster;
+        if (mPoster != null && !mPoster.isEmpty()) {
+            return context.getResources().getString(R.string.url_for_downloading_poster) + mPoster;
+        }
+        // IllegalArgumentException: Path must not be empty. at com.squareup.picasso.Picasso.load.
+        // Placeholder/Error/Title will be shown instead of a crash.
+        return null;
     }
 
-    public String getReleaseDate() {
+    public String getReleaseDate(Context context) {
         String inputPattern = "yyyy-MM-dd";
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
-
-        try {
-            Date date = inputFormat.parse(mReleaseDate);
-            return DateFormat.getDateInstance().format(date);
-        } catch (ParseException e) {
-            Log.e(LOG_TAG, "The Release data was not parsed successfully: " + mReleaseDate);
-            // Return not formatted date
+        if (mReleaseDate != null && !mReleaseDate.isEmpty()) {
+            try {
+                Date date = inputFormat.parse(mReleaseDate);
+                return DateFormat.getDateInstance().format(date);
+            } catch (ParseException e) {
+                Log.e(LOG_TAG, "The Release data was not parsed successfully: " + mReleaseDate);
+                // Return not formatted date
+            }
+        } else {
+            mReleaseDate = context.getString(R.string.release_date_missing);
         }
 
         return mReleaseDate;
     }
 
+    @Nullable
     public String getOverview() {
         return mOverview;
     }
 
+    @Nullable
     public String getUserRating() {
         return mUserRating;
     }
 
+    @Nullable
     public String getBackdropUrl(Context context) {
-        return context.getResources().getString(R.string.url_for_downloading_backdrop) + mBackdrop;
+        if (mBackdrop != null && !mBackdrop.isEmpty()) {
+            return context.getResources().getString(R.string.url_for_downloading_backdrop) +
+                    mBackdrop;
+        }
+        // Placeholder/Error/Title will be shown instead of a crash.
+        return null;
     }
 }

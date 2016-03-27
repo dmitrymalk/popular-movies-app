@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
@@ -61,6 +62,14 @@ public class MovieListAdapter
         final Context context = holder.mView.getContext();
 
         holder.mMovie = movie;
+        holder.mTitleView.setText(movie.getTitle());
+
+        String posterUrl = movie.getPosterUrl(context);
+        // Warning: onError() will not be called, if url is null.
+        // Empty url leads to app crash.
+        if (posterUrl == null) {
+            holder.mTitleView.setVisibility(View.VISIBLE);
+        }
 
         Picasso.with(context)
                 .load(movie.getPosterUrl(context))
@@ -78,7 +87,7 @@ public class MovieListAdapter
 
                             @Override
                             public void onError() {
-                                // Not used
+                                holder.mTitleView.setVisibility(View.VISIBLE);
                             }
                         }
                 );
@@ -100,13 +109,14 @@ public class MovieListAdapter
         public final View mView;
         @Bind(R.id.thumbnail)
         ImageView mThumbnailView;
+        @Bind(R.id.title)
+        TextView mTitleView;
         public Movie mMovie;
 
         public ViewHolder(View view) {
             super(view);
             ButterKnife.bind(this, view);
             mView = view;
-            mThumbnailView = (ImageView) view.findViewById(R.id.thumbnail);
         }
 
         public void cleanUp() {
@@ -114,6 +124,7 @@ public class MovieListAdapter
             Picasso.with(context).cancelRequest(mThumbnailView);
             mThumbnailView.setImageBitmap(null);
             mThumbnailView.setVisibility(View.INVISIBLE);
+            mTitleView.setVisibility(View.GONE);
         }
 
     }
