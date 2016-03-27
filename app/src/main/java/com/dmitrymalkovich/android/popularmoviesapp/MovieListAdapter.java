@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -23,14 +24,14 @@ public class MovieListAdapter
     @SuppressWarnings("unused")
     private final static String LOG_TAG = MovieListAdapter.class.getSimpleName();
 
-    private final List<Movie> mMovies;
+    private final ArrayList<Movie> mMovies;
     private final Callbacks mCallbacks;
 
     public interface Callbacks {
         void open(Movie movie, int position);
     }
 
-    public MovieListAdapter(List<Movie> movies, Callbacks callbacks) {
+    public MovieListAdapter(ArrayList<Movie> movies, Callbacks callbacks) {
         mMovies = movies;
         this.mCallbacks = callbacks;
     }
@@ -135,7 +136,7 @@ public class MovieListAdapter
         notifyDataSetChanged();
     }
 
-    public List<Movie> getMovies() {
+    public ArrayList<Movie> getMovies() {
         return mMovies;
     }
 }

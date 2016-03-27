@@ -1,17 +1,18 @@
 package com.dmitrymalkovich.android.popularmoviesapp;
 
 import android.content.Context;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
-public class Movie implements Serializable {
+public class Movie implements Parcelable {
 
     public static final String LOG_TAG = Movie.class.getSimpleName();
     public static final float POSTER_ASPECT_RATIO = 1.5f;
@@ -22,6 +23,10 @@ public class Movie implements Serializable {
     private String mUserRating;
     private String mReleaseDate;
     private String mBackdrop;
+
+    // Only for createFromParcel
+    private Movie() {
+    }
 
     public Movie(long id, String title, String poster, String overview, String userRating,
                  String releaseDate, String backdrop) {
@@ -89,5 +94,37 @@ public class Movie implements Serializable {
         }
         // Placeholder/Error/Title will be shown instead of a crash.
         return null;
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {
+        public Movie createFromParcel(Parcel source) {
+            Movie movie = new Movie();
+            movie.mId = source.readLong();
+            movie.mTitle = source.readString();
+            movie.mPoster = source.readString();
+            movie.mOverview = source.readString();
+            movie.mUserRating = source.readString();
+            movie.mReleaseDate = source.readString();
+            movie.mBackdrop = source.readString();
+            return movie;
+        }
+
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    public int describeContents() {
+        return 0;
+    }
+
+    public void writeToParcel(Parcel parcel, int flags) {
+        parcel.writeLong(mId);
+        parcel.writeString(mTitle);
+        parcel.writeString(mPoster);
+        parcel.writeString(mOverview);
+        parcel.writeString(mUserRating);
+        parcel.writeString(mReleaseDate);
+        parcel.writeString(mBackdrop);
     }
 }

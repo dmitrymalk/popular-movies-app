@@ -12,8 +12,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -69,14 +69,9 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
 
         // Fetch Movies only if savedInstanceState == null
         if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MOVIES)) {
-            Serializable s = savedInstanceState.getSerializable(EXTRA_MOVIES);
-            if (s instanceof Movies) {
-                Movies movies = (Movies) s;
-                mAdapter.add(movies.getMovies());
-                findViewById(R.id.progress).setVisibility(View.GONE);
-            } else {
-                throw new IllegalStateException("SavedInstanceState is not empty and without needed data.");
-            }
+            List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
+            mAdapter.add(movies);
+            findViewById(R.id.progress).setVisibility(View.GONE);
         } else {
             fetchMovies();
         }
@@ -85,9 +80,9 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Movies movies = new Movies(mAdapter.getMovies());
-        if (movies.getMovies() != null && !movies.getMovies().isEmpty()) {
-            outState.putSerializable(EXTRA_MOVIES, movies);
+        ArrayList<Movie> movies = mAdapter.getMovies();
+        if (movies != null && !movies.isEmpty()) {
+            outState.putParcelableArrayList(EXTRA_MOVIES, movies);
         }
     }
 
@@ -133,7 +128,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public void open(Movie movie, int position) {
         if (mTwoPane) {
             Bundle arguments = new Bundle();
-            arguments.putSerializable(MovieDetailFragment.ARG_MOVIE, movie);
+            arguments.putParcelable(MovieDetailFragment.ARG_MOVIE, movie);
             MovieDetailFragment fragment = new MovieDetailFragment();
             fragment.setArguments(arguments);
             getSupportFragmentManager().beginTransaction()
