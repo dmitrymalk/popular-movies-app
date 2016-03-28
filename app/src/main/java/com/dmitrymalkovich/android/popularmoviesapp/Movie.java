@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -16,12 +18,20 @@ public class Movie implements Parcelable {
 
     public static final String LOG_TAG = Movie.class.getSimpleName();
     public static final float POSTER_ASPECT_RATIO = 1.5f;
+
+    @SerializedName("id")
     private long mId;
+    @SerializedName("original_title")
     private String mTitle;
+    @SerializedName("poster_path")
     private String mPoster;
+    @SerializedName("overview")
     private String mOverview;
+    @SerializedName("vote_average")
     private String mUserRating;
+    @SerializedName("release_date")
     private String mReleaseDate;
+    @SerializedName("backdrop_path")
     private String mBackdrop;
 
     // Only for createFromParcel
