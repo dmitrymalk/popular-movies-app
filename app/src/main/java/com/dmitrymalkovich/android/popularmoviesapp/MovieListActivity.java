@@ -12,6 +12,10 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
+import com.dmitrymalkovich.android.popularmoviesapp.details.MovieDetailActivity;
+import com.dmitrymalkovich.android.popularmoviesapp.details.MovieDetailFragment;
+
 import java.util.ArrayList;
 import java.util.List;
 

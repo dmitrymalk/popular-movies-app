@@ -1,7 +1,9 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -11,7 +13,7 @@
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginTop="@dimen/activity_vertical_margin"
         android:orientation="vertical"
-        tools:context="com.dmitrymalkovich.android.popularmoviesapp.MovieDetailFragment">
+        tools:context=".details.MovieDetailFragment">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -22,6 +24,7 @@
                 android:id="@+id/movie_poster"
                 android:layout_width="@dimen/movie_poster_width_for_detail"
                 android:layout_height="@dimen/movie_poster_height_for_detail"
+                android:layout_marginBottom="@dimen/movie_poster_vertical_padding"
                 android:layout_marginRight="@dimen/movie_poster_padding_right"
                 android:scaleType="fitXY" />
 
@@ -31,40 +34,41 @@
                 android:orientation="vertical">
 
                 <TextView
-                    android:id="@+id/movie_title"
+                    android:id="@+id/trailer_title"
                     style="?android:attr/textAppearanceLarge"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textIsSelectable="true"
                     android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/movie_release_date"
-                    style="?android:attr/textAppearanceMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_for_movie_overview"
-                    android:textIsSelectable="true" />
-
-                <TextView
-                    style="?android:attr/textAppearanceMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/movie_rating_vertical_padding"
-                    android:text="@string/rating"
-                    android:textColor="@color/text_color_for_movie_overview" />
-
-                <include layout="@layout/rating" />
-
-                <TextView
-                    android:id="@+id/movie_user_rating"
-                    style="?android:attr/textAppearanceMedium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/text_color_for_movie_overview"
-                    android:textIsSelectable="true" />
-
             </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/movie_user_rating"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingRight="@dimen/movie_rating_vertical_padding"
+                android:textColor="@color/text_color_for_movie_overview"
+                android:textIsSelectable="true" />
+
+            <include layout="@layout/rating" />
+
+            <TextView
+                android:id="@+id/movie_release_date"
+                style="?android:attr/textAppearanceMedium"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/movie_date_vertical_padding"
+                android:textColor="@color/text_color_for_movie_overview"
+                android:textIsSelectable="true" />
+
         </LinearLayout>
 
         <TextView
@@ -75,6 +79,13 @@
             android:paddingTop="@dimen/movie_overview_padding_top"
             android:textColor="@color/text_color_for_movie_overview"
             android:textIsSelectable="true" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/trailer_list"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/trailer_list_vertical_padding"
+            tools:listitem="@layout/trailer_list_content" />
 
     </LinearLayout>
 </ScrollView>

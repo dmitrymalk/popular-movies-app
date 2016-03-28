@@ -2,11 +2,10 @@
     <string name="app_name">Popular Movies App</string>
     <string name="title_movie_list">Popular Movies</string>
     <string name="title_movie_detail">Movie Detail</string>
-    <string name="user_rating_movie">TMDB: %1$s/10</string>
+    <string name="user_rating_movie">TMDb: %1$s/10</string>
     <string name="most_popular">Most popular</string>
     <string name="top_rated">Top rated</string>
     <string name="title_for_empty_view">No movies</string>
     <string name="text_for_empty_view">Possible internet connection is missing</string>
-    <string name="rating">Rating:</string>
     <string name="release_date_missing">Release date is unknown</string>
 </resources>

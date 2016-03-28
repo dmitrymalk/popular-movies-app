@@ -1,20 +1,30 @@
-package com.dmitrymalkovich.android.popularmoviesapp;
+package com.dmitrymalkovich.android.popularmoviesapp.details;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
+import com.dmitrymalkovich.android.popularmoviesapp.MovieListActivity;
+import com.dmitrymalkovich.android.popularmoviesapp.R;
+import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
 import com.squareup.picasso.Picasso;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.Bind;
@@ -27,15 +37,22 @@ import butterknife.ButterKnife;
  * in two-pane mode (on tablets) or a {@link MovieDetailActivity}
  * on handsets.
  */
-public class MovieDetailFragment extends Fragment {
+public class MovieDetailFragment extends Fragment implements FetchTrailersTask.Listener,
+        TrailerListAdapter.Callbacks {
+
+    @SuppressWarnings("unused")
+    public static final String LOG_TAG = MovieDetailFragment.class.getSimpleName();
     /**
      * The fragment argument representing the movie that this fragment
      * represents.
      */
     public static final String ARG_MOVIE = "ARG_MOVIE";
+    public static final String EXTRA_TRAILERS = "EXTRA_TRAILERS";
+    @Bind(R.id.trailer_list)
+    RecyclerView mRecyclerView;
 
     private Movie mMovie;
-    @Bind(R.id.movie_title)
+    @Bind(R.id.trailer_title)
     TextView mMovieTitleView;
     @Bind(R.id.movie_overview)
     TextView mMovieOverviewView;
@@ -54,6 +71,7 @@ public class MovieDetailFragment extends Fragment {
     Drawable starDrawable;
     @BindDrawable(R.drawable.ic_star_half_black_24dp)
     Drawable starHalfDrawable;
+    private TrailerListAdapter mAdapter;
 
     public MovieDetailFragment() {
     }
@@ -149,6 +167,49 @@ public class MovieDetailFragment extends Fragment {
             ratingStarViews.get(4).setImageDrawable(starDrawable);
         }
 
+        LinearLayoutManager layoutManager
+                = new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false);
+        mRecyclerView.setLayoutManager(layoutManager);
+
+        // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"
+        // during data loading.
+        mAdapter = new TrailerListAdapter(new ArrayList<Trailer>(),
+                this);
+        mRecyclerView.setAdapter(mAdapter);
+
+        // Fetch Movies only if savedInstanceState == null
+        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_TRAILERS)) {
+            List<Trailer> trailers = savedInstanceState.getParcelableArrayList(EXTRA_TRAILERS);
+            mAdapter.add(trailers);
+        } else {
+            fetchTrailers();
+        }
+
         return rootView;
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        ArrayList<Trailer> trailers = mAdapter.getTrailers();
+        if (trailers != null && !trailers.isEmpty()) {
+            outState.putParcelableArrayList(EXTRA_TRAILERS, trailers);
+        }
+    }
+
+    @Override
+    public void watch(Trailer trailer, int position) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" +
+                trailer.getKey())));
+    }
+
+    @Override
+    public void onFetchFinished(List<Trailer> trailers) {
+        mAdapter.add(trailers);
+    }
+
+    private void fetchTrailers() {
+        FetchTrailersTask task = new FetchTrailersTask(this);
+        task.execute(mMovie.getId());
     }
 }

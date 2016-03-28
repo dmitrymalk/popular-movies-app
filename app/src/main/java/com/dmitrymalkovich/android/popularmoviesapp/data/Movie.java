@@ -1,4 +1,4 @@
-package com.dmitrymalkovich.android.popularmoviesapp;
+package com.dmitrymalkovich.android.popularmoviesapp.data;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -6,6 +6,7 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.dmitrymalkovich.android.popularmoviesapp.R;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.DateFormat;
@@ -36,17 +37,6 @@ public class Movie implements Parcelable {
 
     // Only for createFromParcel
     private Movie() {
-    }
-
-    public Movie(long id, String title, String poster, String overview, String userRating,
-                 String releaseDate, String backdrop) {
-        this.mId = id;
-        this.mTitle = title;
-        this.mPoster = poster;
-        this.mOverview = overview;
-        this.mUserRating = userRating;
-        this.mReleaseDate = releaseDate;
-        this.mBackdrop = backdrop;
     }
 
     @Nullable

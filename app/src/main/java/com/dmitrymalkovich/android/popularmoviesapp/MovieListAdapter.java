@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 

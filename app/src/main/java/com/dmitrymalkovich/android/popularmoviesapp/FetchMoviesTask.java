@@ -4,6 +4,10 @@ import android.os.AsyncTask;
 import android.support.annotation.StringDef;
 import android.util.Log;
 
+import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
+import com.dmitrymalkovich.android.popularmoviesapp.data.MovieDatabaseService;
+import com.dmitrymalkovich.android.popularmoviesapp.data.Movies;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
