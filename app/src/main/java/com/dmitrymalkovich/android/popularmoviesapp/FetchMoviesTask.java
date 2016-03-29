@@ -103,7 +103,7 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
                 .build();
 
         MovieDatabaseService service = retrofit.create(MovieDatabaseService.class);
-        Call<Movies> call = service.listMovies(mSortBy,
+        Call<Movies> call = service.discoverMovies(mSortBy,
                 BuildConfig.THE_MOVIE_DATABASE_API_KEY);
         try {
             Response<Movies> response = call.execute();

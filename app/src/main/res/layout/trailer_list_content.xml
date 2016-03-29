@@ -1,22 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/trailer_width_for_detail"
-    android:layout_height="@dimen/trailer_height_for_detail"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     android:foreground="?android:attr/selectableItemBackground">
 
     <ImageView
         android:id="@+id/trailer_thumbnail"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_width="@dimen/trailer_width_for_detail"
+        android:layout_height="@dimen/trailer_height_for_detail"
         android:scaleType="centerCrop" />
-
-    <TextView
-        android:id="@+id/trailer_title"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="top"
-        android:padding="16dp"
-        android:visibility="gone" />
 
     <ImageView
         android:layout_width="wrap_content"

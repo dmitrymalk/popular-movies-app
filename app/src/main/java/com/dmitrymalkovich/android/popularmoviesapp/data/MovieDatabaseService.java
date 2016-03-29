@@ -8,8 +8,11 @@ import retrofit2.http.Query;
 public interface MovieDatabaseService {
 
     @GET("3/movie/{sort_by}")
-    Call<Movies> listMovies(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
+    Call<Movies> discoverMovies(@Path("sort_by") String sortBy, @Query("api_key") String apiKey);
 
     @GET("3/movie/{id}/videos")
-    Call<Trailers> findTrailers(@Path("id") long movieId, @Query("api_key") String apiKey);
+    Call<Trailers> findTrailersById(@Path("id") long movieId, @Query("api_key") String apiKey);
+
+    @GET("3/movie/{id}/reviews")
+    Call<Reviews> findReviewsById(@Path("id") long movieId, @Query("api_key") String apiKey);
 }

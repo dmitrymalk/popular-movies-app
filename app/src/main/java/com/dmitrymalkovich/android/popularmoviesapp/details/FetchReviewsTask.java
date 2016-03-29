@@ -5,6 +5,8 @@ import android.util.Log;
 
 import com.dmitrymalkovich.android.popularmoviesapp.BuildConfig;
 import com.dmitrymalkovich.android.popularmoviesapp.data.MovieDatabaseService;
+import com.dmitrymalkovich.android.popularmoviesapp.data.Review;
+import com.dmitrymalkovich.android.popularmoviesapp.data.Reviews;
 import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
 import com.dmitrymalkovich.android.popularmoviesapp.data.Trailers;
 
@@ -17,27 +19,27 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Encapsulates fetching the movie's trailers from the movie db api.
+ * Encapsulates fetching the movie's reviews from the movie db api.
  */
-public class FetchTrailersTask extends AsyncTask<Long, Void, List<Trailer>> {
+public class FetchReviewsTask extends AsyncTask<Long, Void, List<Review>> {
 
     @SuppressWarnings("unused")
-    public static String LOG_TAG = FetchTrailersTask.class.getSimpleName();
+    public static String LOG_TAG = FetchReviewsTask.class.getSimpleName();
     private final Listener mListener;
 
     /**
-     * Interface definition for a callback to be invoked when trailers are loaded.
+     * Interface definition for a callback to be invoked when reviews are loaded.
      */
     interface Listener {
-        void onFetchFinished(List<Trailer> trailers);
+        void onReviewsFetchFinished(List<Review> reviews);
     }
 
-    public FetchTrailersTask(Listener listener) {
+    public FetchReviewsTask(Listener listener) {
         mListener = listener;
     }
 
     @Override
-    protected List<Trailer> doInBackground(Long... params) {
+    protected List<Review> doInBackground(Long... params) {
         // If there's no movie id, there's nothing to look up.
         if (params.length == 0) {
             return null;
@@ -50,12 +52,12 @@ public class FetchTrailersTask extends AsyncTask<Long, Void, List<Trailer>> {
                 .build();
 
         MovieDatabaseService service = retrofit.create(MovieDatabaseService.class);
-        Call<Trailers> call = service.findTrailersById(movieId,
+        Call<Reviews> call = service.findReviewsById(movieId,
                 BuildConfig.THE_MOVIE_DATABASE_API_KEY);
         try {
-            Response<Trailers> response = call.execute();
-            Trailers trailers = response.body();
-            return trailers.getTrailers();
+            Response<Reviews> response = call.execute();
+            Reviews reviews = response.body();
+            return reviews.getReviews();
         } catch (IOException e) {
             Log.e(LOG_TAG, "A problem occurred talking to the movie db ", e);
         }
@@ -64,7 +66,7 @@ public class FetchTrailersTask extends AsyncTask<Long, Void, List<Trailer>> {
     }
 
     @Override
-    protected void onPostExecute(List<Trailer> trailers) {
-        mListener.onFetchFinished(trailers);
+    protected void onPostExecute(List<Review> reviews) {
+        mListener.onReviewsFetchFinished(reviews);
     }
 }

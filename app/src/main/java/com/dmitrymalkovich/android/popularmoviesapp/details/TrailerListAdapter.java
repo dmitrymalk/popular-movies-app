@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.dmitrymalkovich.android.popularmoviesapp.R;
 import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
@@ -34,7 +33,7 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
 
     public TrailerListAdapter(ArrayList<Trailer> trailers, Callbacks callbacks) {
         mTrailers = trailers;
-        this.mCallbacks = callbacks;
+        mCallbacks = callbacks;
     }
 
     @Override
@@ -49,13 +48,19 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
         final Trailer trailer = mTrailers.get(position);
         final Context context = holder.mView.getContext();
 
-        if (position + 1 != getItemCount()) {
-            holder.mView.setPadding(0, 0, 16, 0);
+        float paddingLeft = 0;
+        if (position == 0) {
+            paddingLeft = context.getResources().getDimension(R.dimen.detail_horizontal_padding);
         }
 
+        float paddingRight = 0;
+        if (position + 1 != getItemCount()) {
+            paddingRight = context.getResources().getDimension(R.dimen.detail_horizontal_padding) / 2;
+        }
+
+        holder.mView.setPadding((int) paddingLeft, 0, (int) paddingRight, 0);
 
         holder.mTrailer = trailer;
-        holder.mTitleView.setText(trailer.getName());
 
         String thumbnailUrl = "http://img.youtube.com/vi/" + trailer.getKey() + "/0.jpg";
         Log.i(LOG_TAG, "thumbnailUrl -> " + thumbnailUrl);
@@ -82,8 +87,6 @@ public class TrailerListAdapter extends RecyclerView.Adapter<TrailerListAdapter.
         public final View mView;
         @Bind(R.id.trailer_thumbnail)
         ImageView mThumbnailView;
-        @Bind(R.id.trailer_title)
-        TextView mTitleView;
         public Trailer mTrailer;
 
         public ViewHolder(View view) {
