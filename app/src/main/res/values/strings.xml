@@ -15,4 +15,5 @@
     <string name="title_for_empty_view_favorites">No movies</string>
     <string name="text_for_empty_view_favorites">You can add here your favorite movies</string>
     <string name="sort_by">Sort by</string>
+    <string name="share_trailer">Share trailer</string>
 </resources>

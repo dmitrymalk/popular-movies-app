@@ -11,9 +11,14 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.ShareActionProvider;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -56,6 +61,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
     private Movie mMovie;
     private TrailerListAdapter mTrailerListAdapter;
     private ReviewListAdapter mReviewListAdapter;
+    private ShareActionProvider mShareActionProvider;
 
     @Bind(R.id.trailer_list)
     RecyclerView mRecyclerViewForTrailers;
@@ -93,6 +99,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         if (getArguments().containsKey(ARG_MOVIE)) {
             mMovie = getArguments().getParcelable(ARG_MOVIE);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -178,6 +185,51 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.movie_detail_fragment, menu);
+        MenuItem shareTrailerMenuItem = menu.findItem(R.id.share_trailer);
+        mShareActionProvider = (ShareActionProvider) MenuItemCompat.getActionProvider(shareTrailerMenuItem);
+    }
+
+    @Override
+    public void watch(Trailer trailer, int position) {
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" +
+                trailer.getKey())));
+    }
+
+    @Override
+    public void read(Review review, int position) {
+        startActivity(new Intent(Intent.ACTION_VIEW,
+                Uri.parse(review.getUrl())));
+    }
+
+    @Override
+    public void onFetchFinished(List<Trailer> trailers) {
+        mTrailerListAdapter.add(trailers);
+        mButtonWatchTrailer.setEnabled(!trailers.isEmpty());
+
+        if (mTrailerListAdapter.getItemCount() > 0) {
+            Trailer trailer = mTrailerListAdapter.getTrailers().get(0);
+            updateShareActionProvider(trailer);
+        }
+    }
+
+    @Override
+    public void onReviewsFetchFinished(List<Review> reviews) {
+        mReviewListAdapter.add(reviews);
+    }
+
+    private void fetchTrailers() {
+        FetchTrailersTask task = new FetchTrailersTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getId());
+    }
+
+    private void fetchReviews() {
+        FetchReviewsTask task = new FetchReviewsTask(this);
+        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getId());
+    }
+
     public void markAsFavorite() {
 
         new AsyncTask<Void, Void, Void>() {
@@ -233,39 +285,6 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
                 updateFavoriteButtons();
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    @Override
-    public void watch(Trailer trailer, int position) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" +
-                trailer.getKey())));
-    }
-
-    @Override
-    public void read(Review review, int position) {
-        startActivity(new Intent(Intent.ACTION_VIEW,
-                Uri.parse(review.getUrl())));
-    }
-
-    @Override
-    public void onFetchFinished(List<Trailer> trailers) {
-        mTrailerListAdapter.add(trailers);
-        mButtonWatchTrailer.setEnabled(!trailers.isEmpty());
-    }
-
-    @Override
-    public void onReviewsFetchFinished(List<Review> reviews) {
-        mReviewListAdapter.add(reviews);
-    }
-
-    private void fetchTrailers() {
-        FetchTrailersTask task = new FetchTrailersTask(this);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getId());
-    }
-
-    private void fetchReviews() {
-        FetchReviewsTask task = new FetchReviewsTask(this);
-        task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, mMovie.getId());
     }
 
     private void updateRatingBar() {
@@ -355,5 +374,14 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         } else {
             return false;
         }
+    }
+
+    private void updateShareActionProvider(Trailer trailer) {
+        String shareBody = trailer.getName() + ": http://www.youtube.com/watch?v=" + trailer.getKey();
+        Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+        sharingIntent.setType("text/plain");
+        sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovie.getTitle());
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        mShareActionProvider.setShareIntent(sharingIntent);
     }
 }

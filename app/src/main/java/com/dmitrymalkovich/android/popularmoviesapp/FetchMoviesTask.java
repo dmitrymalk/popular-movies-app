@@ -29,6 +29,9 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
     public final static String TOP_RATED = "top_rated";
     public final static String FAVORITES = "favorites";
 
+    // FetchMoviesTask cannot load favorites movies now, it's done by loaded (especially for two pane is
+    // comfortable - without force updating left pane on removing/adding a movie to favorites. Another
+    // case when we simple returns from detail - list of favorites also will be updated, if needed).
     @StringDef({MOST_POPULAR, TOP_RATED, FAVORITES})
     public @interface SORT_BY {
     }
