@@ -32,16 +32,16 @@
             app:layoutManager="LinearLayoutManager"
             tools:listitem="@layout/movie_list_content" />
 
+        <include layout="@layout/empty_state_connection" />
+
+        <include layout="@layout/empty_state_favorites" />
+
         <ProgressBar
             android:id="@+id/progress"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:visibility="gone" />
-
-        <include layout="@layout/empty_state_connection" />
-
-        <include layout="@layout/empty_state_favorites" />
 
     </FrameLayout>
 

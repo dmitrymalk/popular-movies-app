@@ -33,6 +33,10 @@ public class Trailer implements Parcelable {
         return mKey;
     }
 
+    public String getTrailerUrl() {
+        return "http://www.youtube.com/watch?v=" + mKey;
+    }
+
     public static final Parcelable.Creator<Trailer> CREATOR = new Creator<Trailer>() {
         public Trailer createFromParcel(Parcel source) {
             Trailer trailer = new Trailer();

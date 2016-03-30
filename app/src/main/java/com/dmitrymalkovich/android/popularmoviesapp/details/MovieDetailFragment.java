@@ -194,8 +194,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
 
     @Override
     public void watch(Trailer trailer, int position) {
-        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.youtube.com/watch?v=" +
-                trailer.getKey())));
+        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(trailer.getTrailerUrl())));
     }
 
     @Override
@@ -377,11 +376,11 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
     }
 
     private void updateShareActionProvider(Trailer trailer) {
-        String shareBody = trailer.getName() + ": http://www.youtube.com/watch?v=" + trailer.getKey();
         Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
         sharingIntent.setType("text/plain");
         sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, mMovie.getTitle());
-        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBody);
+        sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, trailer.getName() + ": "
+                + trailer.getTrailerUrl());
         mShareActionProvider.setShareIntent(sharingIntent);
     }
 }
