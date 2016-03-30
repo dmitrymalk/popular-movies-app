@@ -6,4 +6,12 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
 
+    <style name="Button.Red" parent="Button">
+        <item name="android:colorButtonNormal">@color/red</item>
+    </style>
+
+    <style name="Button.ColorPrimary" parent="Button">
+        <item name="android:colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
 </resources>

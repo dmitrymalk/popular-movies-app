@@ -4,13 +4,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dmitrymalkovich.android.popularmoviesapp.BuildConfig;
-import com.dmitrymalkovich.android.popularmoviesapp.data.MovieDatabaseService;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Review;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Reviews;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Trailers;
+import com.dmitrymalkovich.android.popularmoviesapp.network.MovieDatabaseService;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Review;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Reviews;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -67,6 +66,10 @@ public class FetchReviewsTask extends AsyncTask<Long, Void, List<Review>> {
 
     @Override
     protected void onPostExecute(List<Review> reviews) {
-        mListener.onReviewsFetchFinished(reviews);
+        if (reviews != null) {
+            mListener.onReviewsFetchFinished(reviews);
+        } else {
+            mListener.onReviewsFetchFinished(new ArrayList<Review>());
+        }
     }
 }

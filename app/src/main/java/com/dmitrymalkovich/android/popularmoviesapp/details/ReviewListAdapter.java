@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dmitrymalkovich.android.popularmoviesapp.R;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Review;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Review;
 
 import java.util.ArrayList;
 import java.util.List;

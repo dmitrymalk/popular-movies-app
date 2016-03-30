@@ -1,4 +1,4 @@
-package com.dmitrymalkovich.android.popularmoviesapp.data;
+package com.dmitrymalkovich.android.popularmoviesapp.network;
 
 import android.content.Context;
 import android.os.Parcel;
@@ -39,6 +39,17 @@ public class Movie implements Parcelable {
     private Movie() {
     }
 
+    public Movie(long id, String title, String poster, String overview, String userRating,
+                 String releaseDate, String backdrop) {
+        mId = id;
+        mTitle = title;
+        mPoster = poster;
+        mOverview = overview;
+        mUserRating = userRating;
+        mReleaseDate = releaseDate;
+        mBackdrop = backdrop;
+    }
+
     @Nullable
     public String getTitle() {
         return mTitle;
@@ -58,6 +69,10 @@ public class Movie implements Parcelable {
         return null;
     }
 
+    public String getPoster() {
+        return mPoster;
+    }
+
     public String getReleaseDate(Context context) {
         String inputPattern = "yyyy-MM-dd";
         SimpleDateFormat inputFormat = new SimpleDateFormat(inputPattern, Locale.US);
@@ -73,6 +88,10 @@ public class Movie implements Parcelable {
             mReleaseDate = context.getString(R.string.release_date_missing);
         }
 
+        return mReleaseDate;
+    }
+
+    public String getReleaseDate() {
         return mReleaseDate;
     }
 
@@ -94,6 +113,10 @@ public class Movie implements Parcelable {
         }
         // Placeholder/Error/Title will be shown instead of a crash.
         return null;
+    }
+
+    public String getBackdrop() {
+        return mBackdrop;
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Creator<Movie>() {

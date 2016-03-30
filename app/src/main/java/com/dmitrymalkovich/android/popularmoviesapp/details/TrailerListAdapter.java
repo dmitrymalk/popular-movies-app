@@ -10,7 +10,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.dmitrymalkovich.android.popularmoviesapp.R;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Trailer;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

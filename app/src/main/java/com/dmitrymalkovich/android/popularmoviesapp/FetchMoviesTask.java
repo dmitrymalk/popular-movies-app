@@ -4,9 +4,9 @@ import android.os.AsyncTask;
 import android.support.annotation.StringDef;
 import android.util.Log;
 
-import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
-import com.dmitrymalkovich.android.popularmoviesapp.data.MovieDatabaseService;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Movies;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Movie;
+import com.dmitrymalkovich.android.popularmoviesapp.network.MovieDatabaseService;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Movies;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,8 +27,9 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
 
     public final static String MOST_POPULAR = "popular";
     public final static String TOP_RATED = "top_rated";
+    public final static String FAVORITES = "favorites";
 
-    @StringDef({MOST_POPULAR, TOP_RATED})
+    @StringDef({MOST_POPULAR, TOP_RATED, FAVORITES})
     public @interface SORT_BY {
     }
 
@@ -73,10 +74,6 @@ public class FetchMoviesTask extends AsyncTask<Void, Void, List<Movie>> {
         public List<Movie> getMovies() {
             return mMovies;
         }
-    }
-
-    public FetchMoviesTask(NotifyAboutTaskCompletionCommand command) {
-        mCommand = command;
     }
 
     public FetchMoviesTask(@SORT_BY String sortBy, NotifyAboutTaskCompletionCommand command) {

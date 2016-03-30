@@ -1,6 +1,7 @@
 package com.dmitrymalkovich.android.popularmoviesapp;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,7 +10,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
+import com.dmitrymalkovich.android.popularmoviesapp.data.MovieContract;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Movie;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
@@ -134,6 +136,24 @@ public class MovieListAdapter
     public void add(List<Movie> movies) {
         mMovies.clear();
         mMovies.addAll(movies);
+        notifyDataSetChanged();
+    }
+
+    public void add(Cursor cursor) {
+        mMovies.clear();
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(MovieContract.MovieEntry.COL_MOVIE_ID);
+                String title = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_TITLE);
+                String posterPath = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_POSTER_PATH);
+                String overview = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_OVERVIEW);
+                String rating = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_VOTE_AVERAGE);
+                String releaseDate = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_RELEASE_DATE);
+                String backdropPath = cursor.getString(MovieContract.MovieEntry.COL_MOVIE_BACKDROP_PATH);
+                Movie movie = new Movie(id, title, posterPath, overview, rating, releaseDate, backdropPath);
+                mMovies.add(movie);
+            } while (cursor.moveToNext());
+        }
         notifyDataSetChanged();
     }
 

@@ -1,14 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <group
-        android:id="@+id/menu_sort_by"
-        android:checkableBehavior="single">
-        <item
-            android:id="@+id/sort_by_most_popular"
-            android:checked="true"
-            android:title="@string/most_popular" />
-        <item
-            android:id="@+id/sort_by_top_rated"
-            android:title="@string/top_rated" />
-    </group>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:icon="@drawable/ic_sort_black_24dp"
+        android:title="@string/sort_by"
+        app:showAsAction="ifRoom">
+        <menu>
+            <group
+                android:id="@+id/menu_sort_by"
+                android:checkableBehavior="single">
+                <item
+                    android:id="@+id/sort_by_most_popular"
+                    android:checked="true"
+                    android:title="@string/most_popular" />
+                <item
+                    android:id="@+id/sort_by_top_rated"
+                    android:title="@string/top_rated" />
+
+                <item
+                    android:id="@+id/sort_by_favorites"
+                    android:title="@string/favorites" />
+            </group>
+        </menu>
+    </item>
 </menu>

@@ -4,11 +4,12 @@ import android.os.AsyncTask;
 import android.util.Log;
 
 import com.dmitrymalkovich.android.popularmoviesapp.BuildConfig;
-import com.dmitrymalkovich.android.popularmoviesapp.data.MovieDatabaseService;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Trailer;
-import com.dmitrymalkovich.android.popularmoviesapp.data.Trailers;
+import com.dmitrymalkovich.android.popularmoviesapp.network.MovieDatabaseService;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Trailer;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Trailers;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -65,6 +66,10 @@ public class FetchTrailersTask extends AsyncTask<Long, Void, List<Trailer>> {
 
     @Override
     protected void onPostExecute(List<Trailer> trailers) {
-        mListener.onFetchFinished(trailers);
+        if (trailers != null) {
+            mListener.onFetchFinished(trailers);
+        } else {
+            mListener.onFetchFinished(new ArrayList<Trailer>());
+        }
     }
 }

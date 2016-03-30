@@ -1,4 +1,4 @@
-package com.dmitrymalkovich.android.popularmoviesapp.data;
+package com.dmitrymalkovich.android.popularmoviesapp.network;
 
 import com.google.gson.annotations.SerializedName;
 

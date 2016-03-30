@@ -15,4 +15,21 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="Button" parent="Base.Widget.AppCompat.Button">
+        <item name="android:minHeight">@dimen/button_height</item>
+        <item name="android:paddingBottom">@dimen/button_vertical_padding</item>
+        <item name="android:paddingLeft">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingRight">@dimen/button_horizontal_padding</item>
+        <item name="android:paddingTop">@dimen/button_vertical_padding</item>
+        <item name="android:textColor">@android:color/white</item>
+    </style>
+
+    <style name="Button.Red" parent="Button">
+        <item name="colorButtonNormal">@color/red</item>
+    </style>
+
+    <style name="Button.ColorPrimary" parent="Button">
+        <item name="colorButtonNormal">@color/colorPrimary</item>
+    </style>
+
 </resources>

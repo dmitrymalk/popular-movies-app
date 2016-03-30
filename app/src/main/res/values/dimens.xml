@@ -1,12 +1,10 @@
 <resources>
-    <!-- Default screen margins, per the Android Design guidelines. -->
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="app_bar_height">200dp</dimen>
     <dimen name="movie_poster_padding_right">16dp</dimen>
     <dimen name="movie_poster_vertical_padding">16dp</dimen>
     <dimen name="movie_overview_padding_top">16dp</dimen>
-    <dimen name="movie_rating_vertical_padding">16dp</dimen>
     <dimen name="movie_date_vertical_padding">16dp</dimen>
     <dimen name="trailer_list_vertical_padding">16dp</dimen>
     <dimen name="movie_poster_width_for_detail">140dp</dimen>
@@ -21,4 +19,10 @@
     <integer name="grid_number_cols">2</integer>
     <string name="url_for_downloading_poster">http://image.tmdb.org/t/p/w342</string>
     <string name="url_for_downloading_backdrop">http://image.tmdb.org/t/p/original</string>
+    <dimen name="button_height">36dp</dimen>
+    <dimen name="button_horizontal_padding">16dp</dimen>
+    <dimen name="button_vertical_padding">0dp</dimen>
+    <dimen name="button_vertical_margin">16dp</dimen>
+    <dimen name="detail_title_left_padding">4dp</dimen>
+    <dimen name="detail_title_bottom_margin">4dp</dimen>
 </resources>

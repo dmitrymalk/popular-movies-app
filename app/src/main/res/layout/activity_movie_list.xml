@@ -37,6 +37,7 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
-    <include layout="@layout/empty_state" />
+    <include layout="@layout/empty_state_connection" />
+    <include layout="@layout/empty_state_favorites" />
 
 </android.support.design.widget.CoordinatorLayout>

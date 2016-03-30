@@ -1,4 +1,4 @@
-package com.dmitrymalkovich.android.popularmoviesapp.data;
+package com.dmitrymalkovich.android.popularmoviesapp.network;
 
 import retrofit2.Call;
 import retrofit2.http.GET;

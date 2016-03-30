@@ -3,6 +3,7 @@ package com.dmitrymalkovich.android.popularmoviesapp;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.LoaderManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.dmitrymalkovich.android.popularmoviesapp.data.Movie;
+import android.database.Cursor;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+
+import com.dmitrymalkovich.android.popularmoviesapp.data.MovieContract;
+import com.dmitrymalkovich.android.popularmoviesapp.network.Movie;
 import com.dmitrymalkovich.android.popularmoviesapp.details.MovieDetailActivity;
 import com.dmitrymalkovich.android.popularmoviesapp.details.MovieDetailFragment;
 
@@ -26,21 +32,25 @@ import butterknife.ButterKnife;
  * An activity representing a grid of Movies. This activity
  * has different presentations for handset and tablet-size devices.
  */
-public class MovieListActivity extends AppCompatActivity implements FetchMoviesTask.Listener,
-        MovieListAdapter.Callbacks {
+public class MovieListActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>,
+        FetchMoviesTask.Listener, MovieListAdapter.Callbacks {
 
     private static final String EXTRA_MOVIES = "EXTRA_MOVIES";
+    private static final String EXTRA_SORT_BY = "EXTRA_SORT_BY";
+    private static final int FAVORITE_MOVIES_LOADER = 0;
     /**
      * Whether or not the activity is in two-pane mode, i.e. running on a tablet
      * device.
      */
     private boolean mTwoPane;
+    private RetainedFragment mRetainedFragment;
+    private MovieListAdapter mAdapter;
+    private String mSortBy = FetchMoviesTask.MOST_POPULAR;
+
     @Bind(R.id.movie_list)
     RecyclerView mRecyclerView;
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    private RetainedFragment mRetainedFragment;
-    private MovieListAdapter mAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,14 +61,6 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         mToolbar.setTitle(R.string.title_movie_list);
         setSupportActionBar(mToolbar);
 
-        mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
-                .getInteger(R.integer.grid_number_cols)));
-        // Create adapter with empty list to avoid "E/RecyclerView: No adapter attached; skipping layout"
-        // during data loading.
-        mAdapter = new MovieListAdapter(new ArrayList<Movie>(),
-                this);
-        mRecyclerView.setAdapter(mAdapter);
-
         String tag = RetainedFragment.class.getName();
         this.mRetainedFragment = (RetainedFragment) getSupportFragmentManager().findFragmentByTag(tag);
         if (this.mRetainedFragment == null) {
@@ -66,18 +68,26 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
             getSupportFragmentManager().beginTransaction().add(this.mRetainedFragment, tag).commit();
         }
 
-        if (findViewById(R.id.movie_detail_container) != null) {
-            // For large-screen layouts (res/values-w900dp).
-            mTwoPane = true;
-        }
+        mRecyclerView.setLayoutManager(new GridLayoutManager(this, getResources()
+                .getInteger(R.integer.grid_number_cols)));
+        // To avoid "E/RecyclerView: No adapter attached; skipping layout"
+        mAdapter = new MovieListAdapter(new ArrayList<Movie>(), this);
+        mRecyclerView.setAdapter(mAdapter);
 
-        // Fetch Movies only if savedInstanceState == null
-        if (savedInstanceState != null && savedInstanceState.containsKey(EXTRA_MOVIES)) {
-            List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
-            mAdapter.add(movies);
-            findViewById(R.id.progress).setVisibility(View.GONE);
+        // For large-screen layouts (res/values-w900dp).
+        mTwoPane = findViewById(R.id.movie_detail_container) != null;
+
+        if (savedInstanceState != null) {
+            mSortBy = savedInstanceState.getString(EXTRA_SORT_BY);
+            if (savedInstanceState.containsKey(EXTRA_MOVIES)) {
+                List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
+                mAdapter.add(movies);
+                findViewById(R.id.progress).setVisibility(View.GONE);
+            }
+            updateEmptyState();
         } else {
-            fetchMovies();
+            // Fetch Movies only if savedInstanceState == null
+            fetchMovies(mSortBy);
         }
     }
 
@@ -88,12 +98,31 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         if (movies != null && !movies.isEmpty()) {
             outState.putParcelableArrayList(EXTRA_MOVIES, movies);
         }
+        outState.putString(EXTRA_SORT_BY, mSortBy);
+
+        // Needed to avoid confusion, when we back from detail screen (i. e. top rated selected but
+        // favorite movies are shown and onCreate was not called in this case).
+        if (!mSortBy.equals(FetchMoviesTask.FAVORITES)) {
+            getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.movie_list_activity, menu);
+
+        switch (mSortBy) {
+            case FetchMoviesTask.MOST_POPULAR:
+                menu.findItem(R.id.sort_by_most_popular).setChecked(true);
+                break;
+            case FetchMoviesTask.TOP_RATED:
+                menu.findItem(R.id.sort_by_top_rated).setChecked(true);
+                break;
+            case FetchMoviesTask.FAVORITES:
+                menu.findItem(R.id.sort_by_favorites).setChecked(true);
+                break;
+        }
         return true;
     }
 
@@ -101,31 +130,23 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
-                fetchMovies(FetchMoviesTask.TOP_RATED);
+                mSortBy = FetchMoviesTask.TOP_RATED;
+                fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
             case R.id.sort_by_most_popular:
-                fetchMovies(FetchMoviesTask.MOST_POPULAR);
+                mSortBy = FetchMoviesTask.MOST_POPULAR;
+                fetchMovies(mSortBy);
                 item.setChecked(true);
                 break;
+            case R.id.sort_by_favorites:
+                mSortBy = FetchMoviesTask.FAVORITES;
+                item.setChecked(true);
+                fetchMovies(mSortBy);
             default:
                 break;
         }
-
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFetchFinished(Command command) {
-        if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
-            mAdapter.add(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies());
-            if (mAdapter.getItemCount() == 0) {
-                findViewById(R.id.empty_state_container).setVisibility(View.VISIBLE);
-            } else {
-                findViewById(R.id.empty_state_container).setVisibility(View.GONE);
-            }
-            findViewById(R.id.progress).setVisibility(View.GONE);
-        }
     }
 
     @Override
@@ -145,18 +166,63 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
         }
     }
 
-    private void fetchMovies() {
-        findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
-                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.mRetainedFragment);
-        new FetchMoviesTask(command).execute();
+    @Override
+    public void onFetchFinished(Command command) {
+        if (command instanceof FetchMoviesTask.NotifyAboutTaskCompletionCommand) {
+            mAdapter.add(((FetchMoviesTask.NotifyAboutTaskCompletionCommand) command).getMovies());
+            updateEmptyState();
+            findViewById(R.id.progress).setVisibility(View.GONE);
+        }
     }
 
-    private void fetchMovies(@FetchMoviesTask.SORT_BY String sortBy) {
+    @Override
+    public void onLoadFinished(Loader<Cursor> cursorLoader, Cursor cursor) {
+        mAdapter.add(cursor);
+        updateEmptyState();
+        findViewById(R.id.progress).setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         findViewById(R.id.progress).setVisibility(View.VISIBLE);
-        FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
-                new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.mRetainedFragment);
-        new FetchMoviesTask(sortBy, command).execute();
+        return new CursorLoader(this,
+                MovieContract.MovieEntry.CONTENT_URI,
+                MovieContract.MovieEntry.MOVIE_COLUMNS,
+                null,
+                null,
+                null);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> cursorLoader) {
+        // Not used
+    }
+
+    private void fetchMovies(String sortBy) {
+        if (!sortBy.equals(FetchMoviesTask.FAVORITES)) {
+            findViewById(R.id.progress).setVisibility(View.VISIBLE);
+            FetchMoviesTask.NotifyAboutTaskCompletionCommand command =
+                    new FetchMoviesTask.NotifyAboutTaskCompletionCommand(this.mRetainedFragment);
+            new FetchMoviesTask(sortBy, command).execute();
+        } else {
+            getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
+        }
+    }
+
+    private void updateEmptyState() {
+        if (mAdapter.getItemCount() == 0) {
+            if (mSortBy.equals(FetchMoviesTask.FAVORITES)) {
+                findViewById(R.id.empty_state_container).setVisibility(View.GONE);
+                findViewById(R.id.empty_state_favorites_container).setVisibility(View.VISIBLE);
+            } else {
+                findViewById(R.id.empty_state_container).setVisibility(View.VISIBLE);
+                findViewById(R.id.empty_state_favorites_container).setVisibility(View.GONE);
+            }
+        } else {
+            findViewById(R.id.empty_state_container).setVisibility(View.GONE);
+            findViewById(R.id.empty_state_favorites_container).setVisibility(View.GONE);
+        }
     }
 
     /**
@@ -207,7 +273,7 @@ public class MovieListActivity extends AppCompatActivity implements FetchMoviesT
                 listener.onFetchFinished(command);
                 mWaitingCommand = null;
             } else {
-                // save command for later.
+                // Save the command for later.
                 mWaitingCommand = command;
             }
         }

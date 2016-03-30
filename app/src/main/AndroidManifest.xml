@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.dmitrymalkovich.android.popularmoviesapp">
 
-    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -29,6 +29,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.dmitrymalkovich.android.popularmoviesapp.MovieListActivity" />
         </activity>
-    </application>
 
+        <provider
+            android:name=".data.MoviesProvider"
+            android:authorities="com.dmitrymalkovich.android.popularmoviesapp" />
+    </application>
 </manifest>

@@ -1,4 +1,4 @@
-package com.dmitrymalkovich.android.popularmoviesapp.data;
+package com.dmitrymalkovich.android.popularmoviesapp.network;
 
 import android.os.Parcel;
 import android.os.Parcelable;
