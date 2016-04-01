@@ -146,6 +146,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
         mRecyclerViewForTrailers.setLayoutManager(layoutManager);
         mTrailerListAdapter = new TrailerListAdapter(new ArrayList<Trailer>(), this);
         mRecyclerViewForTrailers.setAdapter(mTrailerListAdapter);
+        mRecyclerViewForTrailers.setNestedScrollingEnabled(false);
 
         // For vertical list of reviews
         mReviewListAdapter = new ReviewListAdapter(new ArrayList<Review>(), this);
@@ -322,7 +323,7 @@ public class MovieDetailFragment extends Fragment implements FetchTrailersTask.L
 
             @Override
             protected void onPostExecute(Boolean isFavorite) {
-                if (isFavorite()) {
+                if (isFavorite) {
                     mButtonRemoveFromFavorites.setVisibility(View.VISIBLE);
                     mButtonMarkAsFavorite.setVisibility(View.GONE);
                 } else {
