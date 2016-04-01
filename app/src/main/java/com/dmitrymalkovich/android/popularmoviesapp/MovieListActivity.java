@@ -130,11 +130,19 @@ public class MovieListActivity extends AppCompatActivity implements LoaderManage
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.sort_by_top_rated:
+                if (mSortBy.equals(FetchMoviesTask.FAVORITES)) {
+                    getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                }
                 mSortBy = FetchMoviesTask.TOP_RATED;
                 fetchMovies(mSortBy);
                 item.setChecked(true);
+                // Needed to avoid confusion, when we back from detail screen (i. e. top rated selected but
+                // favorite movies are shown and onCreate was not called in this case).
                 break;
             case R.id.sort_by_most_popular:
+                if (mSortBy.equals(FetchMoviesTask.FAVORITES)) {
+                    getSupportLoaderManager().destroyLoader(FAVORITE_MOVIES_LOADER);
+                }
                 mSortBy = FetchMoviesTask.MOST_POPULAR;
                 fetchMovies(mSortBy);
                 item.setChecked(true);
