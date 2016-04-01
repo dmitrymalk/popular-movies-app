@@ -83,6 +83,11 @@ public class MovieListActivity extends AppCompatActivity implements LoaderManage
                 List<Movie> movies = savedInstanceState.getParcelableArrayList(EXTRA_MOVIES);
                 mAdapter.add(movies);
                 findViewById(R.id.progress).setVisibility(View.GONE);
+
+                // For listening content updates for tow pane mode
+                if (mSortBy.equals(FetchMoviesTask.FAVORITES)) {
+                    getSupportLoaderManager().initLoader(FAVORITE_MOVIES_LOADER, null, this);
+                }
             }
             updateEmptyState();
         } else {
