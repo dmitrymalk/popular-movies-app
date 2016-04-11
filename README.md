@@ -6,6 +6,10 @@ This is the second project in Udacity's Android Developer Nanodegree. The purpos
 <img width="40%" src="https://cloud.githubusercontent.com/assets/2931932/14224946/c909d104-f8b8-11e5-8cd9-5933565a610d.png" />
 <img width="80%" src="https://cloud.githubusercontent.com/assets/2931932/14224945/c9090666-f8b8-11e5-8b83-a4f6cb3809f3.png" />
 
+### Getting Started
+
+App uses The Movie Database API. You have to enter your API key in order to run the app. You can create your own one very easy! https://www.themoviedb.org/account/signup?language=en-EN. When you get it, just set it here:  "popular-movies-app/gradle.properties"
+
 ### Project review
 "In my perspective, you have done a perfect job implementing popular movie stage 1 and the format of your codes is extremely standard and your codes are easy to be understood. Great job for your popular movie stage 1! Hope to see your stage 2 codes soon! :)" - Udacity Code Reviewer.
 
