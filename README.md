@@ -13,10 +13,10 @@ App uses The Movie Database API. You have to enter your API key in order to run 
 ### Project review
 "In my perspective, you have done a perfect job implementing popular movie stage 1 and the format of your codes is extremely standard and your codes are easy to be understood. Great job for your popular movie stage 1! Hope to see your stage 2 codes soon! :)" - Udacity Code Reviewer.
 
-##### Stage 1: Graded as "Met Specifications".
+##### Popular Movies App Stage 1: Graded as "Met Specifications".
 https://review.udacity.com/#!/reviews/123985/shared
 
-##### Stage 2: Graded as "Exceeds Specifications".
+##### Popular Movies App Stage 2: Graded as "Exceeds Specifications".
 https://review.udacity.com/#!/reviews/126047/shared
 
 ## License
